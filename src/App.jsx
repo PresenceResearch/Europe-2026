@@ -286,6 +286,19 @@ const App = () => {
                                 <p className="text-xs text-emerald-300 font-bold mb-1">Agent Beta (Transit Scraper)</p>
                                 <p className="text-sm text-slate-300">Monitoring DB Bahn Flex fares. Current: €54.90.</p>
                             </div>
+                            <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 mt-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-2 h-2 rounded-full bg-indigo-400 animate-ping" />
+                                    <p className="text-xs font-bold text-white uppercase tracking-widest">Connect iPhone Alerts</p>
+                                </div>
+                                <p className="text-[10px] text-slate-400 mb-3 leading-tight">
+                                    Install the <strong>ntfy</strong> app from the App Store and subscribe to topic:
+                                </p>
+                                <div className="bg-black/40 p-2 rounded border border-white/10 flex items-center justify-between group/code">
+                                    <code className="text-xs text-indigo-300 font-mono">sentinel_europe_2026_alerts</code>
+                                    <ExternalLink size={12} className="text-slate-600 group-hover/code:text-indigo-400 transition-colors" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

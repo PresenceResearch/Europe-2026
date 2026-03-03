@@ -22,6 +22,18 @@ class FlightSentinel {
         this.itineraryPath = path.resolve(__dirname, '../data/itinerary.json');
         this.statusPath = path.resolve(__dirname, './flight_status.json');
         this.openSkyBase = 'https://opensky-network.org/api/states/all';
+        this.ntfyTopic = 'sentinel_europe_2026_alerts'; // Unique topic for the trip
+    }
+
+    async notify(message, priority = 'default') {
+        try {
+            await axios.post(`https://ntfy.sh/${this.ntfyTopic}`, message, {
+                headers: { 'Title': '🚨 Sentinel Flight Alert', 'Priority': priority }
+            });
+            console.log(`[FlightSentinel] Push alert sent: ${message}`);
+        } catch (e) {
+            console.error('[FlightSentinel] Failed to send push alert', e.message);
+        }
     }
 
     async init() {
@@ -130,6 +142,7 @@ class FlightSentinel {
                         f.gate = update.gate;
                         changed = true;
                         console.log(`[FlightSentinel] Updating status for ${f.id} in ${segment.city}`);
+                        this.notify(`${f.id} status changed to ${update.status}. New Dep: ${update.newTime}`, 'high');
                     }
                 });
             }

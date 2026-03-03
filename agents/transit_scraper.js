@@ -19,6 +19,17 @@ class TransitScraper {
             { from: 'Berlin', to: 'Dresden', date: '2026-03-11' }
         ];
         this.itineraryPath = path.resolve(__dirname, '../data/itinerary.json');
+        this.ntfyTopic = 'sentinel_europe_2026_alerts';
+    }
+
+    async notify(message) {
+        try {
+            await axios.post(`https://ntfy.sh/${this.ntfyTopic}`, message, {
+                headers: { 'Title': '🚆 Transit Price alert', 'Tags': 'euro,train' }
+            });
+        } catch (e) {
+            console.error('[TransitScraper] Failed to send notification:', e.message);
+        }
     }
 
     async init() {
@@ -52,6 +63,12 @@ class TransitScraper {
         // In a real app, this might update a database or a state file
         // Here we'll log it as the primary action
         console.log(`[TransitScraper] Price update: ${segment.from} -> ${segment.to} is €${price}`);
+
+        const currentPrice = parseFloat(price);
+        if (currentPrice < 55) {
+            console.log(`[TransitScraper] Price drop detected! Current: €${currentPrice}`);
+            this.notify(`Price drop for ${segment.from} -> ${segment.to}! Now only €${currentPrice}. Check DB Bahn.`);
+        }
     }
 
     scheduleChecks() {
