@@ -25,7 +25,10 @@ import {
     Timer,
     Globe,
     Cpu,
-    Target
+    Target,
+    Terminal,
+    MessageSquare,
+    Bot
 } from 'lucide-react';
 import itineraryData from '../data/itinerary.json';
 
@@ -121,6 +124,69 @@ const CurrencyWidget = ({ locale, city }) => {
                     <span className="flex items-center gap-1"><Globe size={10} /> {city} Locale</span>
                     <span className="text-indigo-400 font-mono">Synced</span>
                 </div>
+            </div>
+        </div>
+    );
+};
+
+const SentinelConsole = ({ personality }) => {
+    const [logs, setLogs] = useState([
+        { id: 1, type: 'sys', msg: 'Neural handshake established.' },
+        { id: 2, type: 'sys', msg: 'Mission Protocol: Europe 2026 initialized.' },
+        { id: 3, type: 'sentinel', msg: 'Recursivity check: Active. Security loops holding.' },
+        { id: 4, type: 'sentinel', msg: 'Analyzing BOS/IAD air corridors for optimal telemetry.' }
+    ]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const newMsgs = [
+                'Logistics packet validated.',
+                'Cross-referencing DB Bahn latency.',
+                'Berlin corridor clear of delays.',
+                'recursive_loop_check: Success.',
+                'Maintaining non-alcoholic environment directives.'
+            ];
+            const randomMsg = newMsgs[Math.floor(Math.random() * newMsgs.length)];
+            setLogs(prev => [...prev.slice(-5), { id: Date.now(), type: 'sys', msg: randomMsg }]);
+        }, 8000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="mt-8 glass-card border-indigo-500/20 bg-black/40 p-0 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="bg-indigo-500/10 p-4 border-b border-white/5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <Terminal size={14} className="text-indigo-400" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-300">Sentinel Console</span>
+                </div>
+                <div className="flex gap-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500/50" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500/50" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50" />
+                </div>
+            </div>
+            <div className="p-4 font-mono text-[10px] space-y-2 h-40 overflow-y-auto custom-scrollbar">
+                {logs.map(log => (
+                    <div key={log.id} className="flex gap-2 animate-in fade-in slide-in-from-left-2 duration-500">
+                        <span className={log.type === 'sys' ? 'text-slate-600' : 'text-indigo-500'}>
+                            [{log.type === 'sys' ? 'SYS' : 'SENTINEL'}]
+                        </span>
+                        <span className="text-slate-300">{log.msg}</span>
+                    </div>
+                ))}
+                <div className="flex gap-2 items-center text-indigo-400 animate-pulse">
+                    <span>{'>'}</span>
+                    <span className="w-1 h-3 bg-indigo-500" />
+                </div>
+            </div>
+            <div className="bg-white/5 p-3 flex items-center gap-3">
+                <Bot size={14} className="text-indigo-400" />
+                <input
+                    type="text"
+                    placeholder="Input mission query..."
+                    className="bg-transparent border-none text-[10px] text-slate-300 focus:ring-0 w-full placeholder:text-slate-600 font-mono"
+                    readOnly
+                />
             </div>
         </div>
     );
@@ -269,6 +335,8 @@ const App = () => {
                             </div>
                         </button>
                     ))}
+
+                    <SentinelConsole personality={agent.personality} />
 
                     {/* Agent Section */}
                     <div className="mt-8 glass-card border-indigo-500/20 bg-indigo-500/5 p-6 rounded-3xl relative overflow-hidden">
