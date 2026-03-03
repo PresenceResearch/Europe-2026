@@ -1,5 +1,11 @@
 {
   "trip_id": "EUROPE_2026_MAR",
+  "ai_agent": {
+    "name": "Sentinel",
+    "version": "1.0.0",
+    "personality": "Sharp, recursive, and logistics-focused. Challenging but helpful. Focuses on non-alcoholic vibes and security.",
+    "model": "gemini-2.5-flash-preview-09-2025"
+  },
   "segments": [
     {
       "date": "2026-03-06",

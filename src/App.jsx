@@ -23,7 +23,9 @@ import {
     ShieldAlert,
     Fingerprint,
     Timer,
-    Globe
+    Globe,
+    Cpu,
+    Target
 } from 'lucide-react';
 import itineraryData from '../data/itinerary.json';
 
@@ -188,6 +190,7 @@ const App = () => {
     }, []);
 
     const segments = itineraryData.segments;
+    const agent = itineraryData.ai_agent || { name: 'Sentinel', version: '1.0.0', personality: 'Recursive', model: 'Unknown' };
     const currentSegment = segments[activeSegment];
 
     return (
@@ -195,9 +198,14 @@ const App = () => {
             {/* Header */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
                 <div>
-                    <h1 className="text-4xl font-black mb-2 bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent uppercase tracking-tight">
-                        Sentinel Dashboard
-                    </h1>
+                    <div className="flex items-center gap-3 mb-2">
+                        <h1 className="text-4xl font-black bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent uppercase tracking-tight">
+                            {agent.name} v{agent.version}
+                        </h1>
+                        <span className="px-2 py-1 rounded bg-indigo-500/10 text-[10px] font-black text-indigo-400 border border-indigo-500/20 uppercase tracking-widest">
+                            {agent.model}
+                        </span>
+                    </div>
                     <p className="text-slate-400 flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
                         <ShieldCheck size={16} className="text-emerald-500" />
                         Mission Tracking Protocol Active
@@ -263,19 +271,28 @@ const App = () => {
                     ))}
 
                     {/* Agent Section */}
-                    <div className="mt-8 glass-card border-indigo-500/20 bg-indigo-500/5 p-6 rounded-3xl">
-                        <h4 className="font-black text-sm uppercase tracking-widest flex items-center gap-2 mb-6">
-                            <ShieldCheck size={18} className="text-indigo-400" />
-                            Intelligence Grid
+                    <div className="mt-8 glass-card border-indigo-500/20 bg-indigo-500/5 p-6 rounded-3xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-4 opacity-5">
+                            <Cpu size={120} />
+                        </div>
+                        <h4 className="font-black text-sm uppercase tracking-widest flex items-center gap-2 mb-6 relative z-10">
+                            <Cpu size={18} className="text-indigo-400" />
+                            Core Intelligence
                         </h4>
-                        <div className="space-y-4">
+                        <div className="space-y-4 relative z-10">
+                            <div className="p-4 rounded-2xl bg-black/40 border border-white/5">
+                                <p className="text-[11px] text-indigo-400 font-black uppercase tracking-widest mb-2">System Persona</p>
+                                <p className="text-xs text-slate-300 font-bold italic leading-relaxed">
+                                    "{agent.personality}"
+                                </p>
+                            </div>
                             <div className="p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-indigo-500/20 transition-colors">
-                                <p className="text-[11px] text-indigo-400 font-black uppercase tracking-widest mb-1">Agent Alpha</p>
-                                <p className="text-xs text-slate-300 font-medium">Monitoring 7 transponders. OpenSky handshake verified.</p>
+                                <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest mb-1">Agent Alpha</p>
+                                <p className="text-xs text-slate-300 font-medium">Scanning 7 transatlantic transponders.</p>
                             </div>
                             <div className="p-4 rounded-2xl bg-black/40 border border-white/5 hover:border-emerald-500/20 transition-colors">
-                                <p className="text-[11px] text-emerald-400 font-black uppercase tracking-widest mb-1">Agent Beta</p>
-                                <p className="text-xs text-slate-300 font-medium">DB Bahn Flex fare scraping active. No price drops detected.</p>
+                                <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest mb-1">Agent Beta</p>
+                                <p className="text-xs text-slate-300 font-medium">Monitoring European transit pricing.</p>
                             </div>
                         </div>
                     </div>
@@ -283,8 +300,12 @@ const App = () => {
 
                 {/* Right Column: Segment Details */}
                 <div className="lg:col-span-8 space-y-6">
-                    <div className="glass-card min-h-[500px] p-8 rounded-3xl">
-                        <div className="flex items-center gap-4 mb-10">
+                    <div className="glass-card min-h-[500px] p-8 rounded-3xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                            <Target size={200} />
+                        </div>
+
+                        <div className="flex items-center gap-4 mb-10 relative z-10">
                             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
                                 <MapPin size={28} className="text-white" />
                             </div>
@@ -301,7 +322,7 @@ const App = () => {
 
                         {/* Flights Section */}
                         {currentSegment.flights && (
-                            <div className="mb-12">
+                            <div className="mb-12 relative z-10">
                                 <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                                     <Plane size={16} /> Air Logistics Status
                                 </h3>
@@ -363,7 +384,7 @@ const App = () => {
                                                                     </div>
                                                                 )}
 
-                                                                {/* Group Hub Intelligence UNDER the Departure Hub as requested */}
+                                                                {/* Hub Intelligence */}
                                                                 {currentSegment.city === 'Departure' && (leg.from === 'IAD' || leg.from === 'BOS') && (
                                                                     <div className="mt-8 pt-8 border-t border-white/5 space-y-6">
                                                                         <SecurityWidget airportId={leg.from} />
@@ -382,7 +403,7 @@ const App = () => {
                         )}
 
                         {/* Logistics & Environment Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 relative z-10">
                             {/* Accommodation Section */}
                             {currentSegment.accommodation && (
                                 <div>
@@ -412,7 +433,7 @@ const App = () => {
                                                         return (
                                                             <div key={key} className="bg-black/30 p-4 rounded-2xl border border-white/5 hover:border-white/10 transition-colors shadow-inner">
                                                                 <p className="text-[10px] text-slate-600 uppercase font-black mb-1 px-1 tracking-widest">{key.replace('_', ' ')}</p>
-                                                                <p className="text-sm font-black text-slate-200 px-1">{value}</p>
+                                                                <p className="text-sm font-black text-slate-200 px-1">{value || 'Pending'}</p>
                                                             </div>
                                                         );
                                                     })}
@@ -445,14 +466,14 @@ const App = () => {
                                 <h3 className="text-xs font-black text-slate-500 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                                     <Activity size={16} /> Market & Environment
                                 </h3>
-                                {/* Only show general widgets if not already embedded in flight cards (Departure handled above) */}
+                                {/* Only show general widgets if not already embedded in flight cards */}
                                 {currentSegment.city !== 'Departure' && (
                                     <>
                                         <WeatherWidget city={currentSegment.city === 'Return' ? 'Prague' : currentSegment.city} />
                                         {currentSegment.locale && (
                                             <CurrencyWidget locale={currentSegment.locale} city={currentSegment.city} />
                                         )}
-                                        {/* Show extra info for Return segment (DUB layover weather) */}
+                                        {/* Layover Weather for Return */}
                                         {currentSegment.city === 'Return' && <WeatherWidget city="DUB" />}
                                     </>
                                 )}
@@ -461,7 +482,7 @@ const App = () => {
 
                         {/* Empty State fallback */}
                         {!currentSegment.flights && !currentSegment.accommodation && (
-                            <div className="flex flex-col items-center justify-center py-32 text-slate-500 opacity-30 select-none">
+                            <div className="flex flex-col items-center justify-center py-32 text-slate-500 opacity-30 select-none relative z-10">
                                 <Activity size={64} className="mb-4 animate-pulse" />
                                 <p className="font-black uppercase tracking-[0.4em] text-xs">No Signal Detected</p>
                             </div>
@@ -469,7 +490,7 @@ const App = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="glass-card flex items-center gap-5 p-6 rounded-3xl hover:bg-slate-800/60 transition-colors cursor-default">
+                        <div className="glass-card flex items-center gap-5 p-6 rounded-3xl hover:bg-slate-800/60 transition-colors cursor-default border-indigo-500/10">
                             <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 shadow-inner">
                                 <Wifi size={24} />
                             </div>
@@ -484,7 +505,7 @@ const App = () => {
                             </div>
                             <div>
                                 <p className="text-[10px] text-emerald-600 font-black uppercase tracking-widest mb-1">Countdown</p>
-                                <p className="text-sm font-black text-emerald-300 tracking-tight leading-none uppercase">T-Minus 72h</p>
+                                <p className="text-sm font-black text-emerald-300 tracking-tight leading-none uppercase">Mission Start Mar 6</p>
                             </div>
                         </div>
                         <div className="glass-card flex items-center gap-5 p-6 rounded-3xl group cursor-pointer hover:bg-indigo-500/10 border-indigo-500/20 bg-indigo-500/5 transition-all">
@@ -493,7 +514,7 @@ const App = () => {
                             </div>
                             <div>
                                 <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-1">Pre-Check</p>
-                                <p className="text-sm group-hover:text-white transition-colors font-black tracking-tight leading-none uppercase">Flight Ready</p>
+                                <p className="text-sm group-hover:text-white transition-colors font-black tracking-tight leading-none uppercase">System Verified</p>
                             </div>
                         </div>
                     </div>
