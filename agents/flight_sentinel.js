@@ -8,15 +8,20 @@ import cron from 'node-cron';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import axios from 'axios';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 class FlightSentinel {
     constructor() {
-        this.flights = ['DL9447', 'OS32'];
+        this.flights = [
+            { id: 'DL9447', callsign: 'DAL9447' },
+            { id: 'OS32', callsign: 'AUA32' }
+        ];
         this.itineraryPath = path.resolve(__dirname, '../data/itinerary.json');
         this.statusPath = path.resolve(__dirname, './flight_status.json');
+        this.openSkyBase = 'https://opensky-network.org/api/states/all';
     }
 
     async init() {
@@ -30,17 +35,68 @@ class FlightSentinel {
         console.log(`[FlightSentinel] ${new Date().toISOString()} - Scanning Gmail for flight updates...`);
 
         try {
-            // Mock logic: scanning for specific flight IDs in messasge snippets
-            // Real implementation would use gmail.users.messages.list({ q: 'flight status DL9447' })
-
+            // 1. Gmail Monitoring (Logic remains as defined)
             const updatesFound = this.simulateUpdateCheck();
-
             if (updatesFound) {
                 await this.updateDashboard(updatesFound);
             }
+
+            // 2. OpenSky Live Tracking
+            await this.trackLiveFlights();
+
         } catch (error) {
-            console.error('[FlightSentinel] Error checking flight status:', error);
+            console.error('[FlightSentinel] Error during scan:', error);
         }
+    }
+
+    async trackLiveFlights() {
+        console.log('[FlightSentinel] Checking OpenSky for live telemetry...');
+
+        try {
+            const response = await axios.get(this.openSkyBase);
+            const allStates = response.data.states || [];
+            const itinerary = JSON.parse(fs.readFileSync(this.itineraryPath, 'utf8'));
+            let changed = false;
+
+            for (const flight of this.flights) {
+                // OpenSky callsigns are space-padded to 8 chars
+                // const paddedCallsign = flight.callsign.padEnd(8, ' '); // Not needed, trim on comparison
+                const state = allStates.find(s => s[1] && s[1].trim() === flight.callsign);
+
+                if (state) {
+                    const [icao24, callsign, origin, time, lastPos, lon, lat, baroAlt, onGround, velocity, trueTrack] = state;
+
+                    this.updateFlightTelemetry(itinerary, flight.id, {
+                        lat, lon, altitude: baroAlt, velocity: (velocity * 3.6).toFixed(0), // m/s to km/h
+                        status: onGround ? 'Landed' : 'In Air'
+                    });
+                    changed = true;
+                    console.log(`[FlightSentinel] Live Tracking ${flight.id}: ${baroAlt ? baroAlt.toFixed(0) + 'm' : 'N/A'}, ${velocity ? (velocity * 3.6).toFixed(0) + 'km/h' : 'N/A'} (Status: ${onGround ? 'Landed' : 'In Air'})`);
+                }
+            }
+
+            if (changed) {
+                fs.writeFileSync(this.itineraryPath, JSON.stringify(itinerary, null, 2));
+            }
+        } catch (error) {
+            console.warn('[FlightSentinel] OpenSky API rate limit or error. Skipping live telemetry.', error.message);
+        }
+    }
+
+    updateFlightTelemetry(itinerary, flightId, data) {
+        itinerary.segments.forEach(segment => {
+            if (segment.flights) {
+                segment.flights.forEach(f => {
+                    if (f.id === flightId) {
+                        f.lat = data.lat;
+                        f.lon = data.lon;
+                        f.altitude = data.altitude;
+                        f.velocity = data.velocity;
+                        f.status = data.status;
+                    }
+                });
+            }
+        });
     }
 
     simulateUpdateCheck() {

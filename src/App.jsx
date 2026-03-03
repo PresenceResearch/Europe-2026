@@ -326,9 +326,25 @@ const App = () => {
                                                 <Plane size={18} className="text-slate-600 rotate-90" />
                                                 <div className="text-right">
                                                     <p className="text-xs text-slate-500">Status</p>
-                                                    <p className="text-sm font-bold text-emerald-400">Scheduled</p>
+                                                    <p className={`text-sm font-bold ${flight.status === 'In Air' ? 'text-indigo-400 animate-pulse' : 'text-emerald-400'}`}>
+                                                        {flight.status || 'Scheduled'}
+                                                    </p>
                                                 </div>
                                             </div>
+
+                                            {/* Live Telemetry Overlay */}
+                                            {flight.status === 'In Air' && (
+                                                <div className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <p className="text-[10px] text-slate-500 uppercase font-bold">Altitude</p>
+                                                        <p className="text-sm font-mono text-indigo-300">{flight.altitude ? Math.round(flight.altitude).toLocaleString() : '--'} m</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] text-slate-500 uppercase font-bold">Velocity</p>
+                                                        <p className="text-sm font-mono text-indigo-300">{flight.velocity || '--'} km/h</p>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
