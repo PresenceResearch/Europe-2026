@@ -6,16 +6,48 @@
       "city": "Departure",
       "flights": [
         {
-          "id": "DL9447",
-          "from": "IAD",
-          "departs": "18:45",
-          "status": "Delayed",
-          "gate": "B12"
+          "traveler": "Mark",
+          "route": "IAD -> AMS -> BER",
+          "legs": [
+            {
+              "id": "DL9447",
+              "from": "IAD",
+              "to": "AMS",
+              "departs": "18:05",
+              "arrives": "07:35 +1",
+              "status": "Scheduled"
+            },
+            {
+              "id": "DL9190",
+              "from": "AMS",
+              "to": "BER",
+              "departs": "09:50",
+              "arrives": "11:05",
+              "status": "Scheduled"
+            }
+          ]
         },
         {
-          "id": "OS32",
-          "from": "BOS",
-          "departs": "18:25"
+          "traveler": "Shelagh/Will",
+          "route": "BOS -> VIE -> BER",
+          "legs": [
+            {
+              "id": "OS32",
+              "from": "BOS",
+              "to": "VIE",
+              "departs": "18:25",
+              "arrives": "08:20 +1",
+              "status": "Scheduled"
+            },
+            {
+              "id": "OS225",
+              "from": "VIE",
+              "to": "BER",
+              "departs": "09:20",
+              "arrives": "10:35",
+              "status": "Scheduled"
+            }
+          ]
         }
       ]
     },
@@ -23,10 +55,13 @@
       "date": "2026-03-07",
       "city": "Berlin",
       "accommodation": {
+        "name": "Eclectic Belle Etage Apartment",
         "address": "Wörther Str. 6, 10435 Berlin",
+        "host": "Niovi",
         "rules": [
-          "Trash separation",
-          "Tender shades"
+          "Strict trash separation",
+          "Tender shades",
+          "No courtyard noise after 22:00"
         ]
       }
     },
@@ -34,15 +69,64 @@
       "date": "2026-03-10",
       "city": "Dresden",
       "accommodation": {
-        "details": "Altstadt Dresden Hotel"
+        "name": "Pineapple Apartments Zwinger",
+        "address": "Schweriner Str. 36, 01067 Dresden",
+        "details": "3rd Floor",
+        "host": "Pineapple Team",
+        "confirmation": "HMRPDQF3JT",
+        "check_in": "15:00 (Luggage storage from 12:00)",
+        "parking": "Ermischstraße or Wettiner Platz (€6/day)"
       }
     },
     {
-      "date": "2026-03-11",
-      "city": "Prague",
-      "accommodation": {
-        "details": "Central Prague Apartment"
-      }
+      "date": "2026-03-15",
+      "city": "Return",
+      "flights": [
+        {
+          "traveler": "Mark/Shelagh",
+          "route": "PRG -> DUB -> IAD",
+          "legs": [
+            {
+              "id": "EI643",
+              "from": "PRG",
+              "to": "DUB",
+              "departs": "11:40",
+              "arrives": "13:20",
+              "status": "Scheduled"
+            },
+            {
+              "id": "EI119",
+              "from": "DUB",
+              "to": "IAD",
+              "departs": "16:20",
+              "arrives": "20:30",
+              "status": "Scheduled"
+            }
+          ]
+        },
+        {
+          "traveler": "Will",
+          "route": "PRG -> DUB -> BOS",
+          "legs": [
+            {
+              "id": "EI643",
+              "from": "PRG",
+              "to": "DUB",
+              "departs": "11:40",
+              "arrives": "13:20",
+              "status": "Scheduled"
+            },
+            {
+              "id": "EI137",
+              "from": "DUB",
+              "to": "BOS",
+              "departs": "16:45",
+              "arrives": "19:55",
+              "status": "Scheduled"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -27,7 +27,7 @@ import {
 import itineraryData from '../data/itinerary.json';
 
 const SecurityWidget = ({ airportId }) => {
-    // Mock live security status - in a real app this would fetch from security_status.json
+    // Mock live security status
     const statusMap = {
         'IAD': { standard: 4, precheck: 2, status: 'Green', name: 'Dulles International' },
         'BOS': { standard: 28, precheck: 12, status: 'Yellow', name: 'Logan Intl (Terminal E)' }
@@ -80,10 +80,12 @@ const SecurityWidget = ({ airportId }) => {
 };
 
 const CurrencyWidget = ({ city }) => {
-    // Mock rates - in a real app this would fetch from an API like fixer.io or exchangeratesapi.io
+    // Mock rates
     const ratesMap = {
         'Berlin': { currency: 'EUR', rate: 0.94, symbol: '€', trend: <TrendingDown size={14} className="text-emerald-400" />, change: '-0.2%' },
+        'Dresden': { currency: 'EUR', rate: 0.94, symbol: '€', trend: <TrendingDown size={14} className="text-emerald-400" />, change: '-0.2%' },
         'Prague': { currency: 'CZK', rate: 23.45, symbol: 'Kč', trend: <TrendingUp size={14} className="text-rose-400" />, change: '+1.1%' },
+        'Return': { currency: 'CZK', rate: 23.45, symbol: 'Kč', trend: <TrendingUp size={14} className="text-rose-400" />, change: '+1.1%' },
         'Departure': { currency: 'EUR', rate: 0.94, symbol: '€', trend: <TrendingDown size={14} className="text-emerald-400" />, change: '-0.2%' }
     };
 
@@ -130,13 +132,16 @@ const CurrencyWidget = ({ city }) => {
 };
 
 const WeatherWidget = ({ city }) => {
-    // Mock weather data - in a real app this would fetch from OpenWeatherMap
     const weatherMap = {
         'Berlin': { temp: 4, condition: 'Light Rain', icon: <CloudRain className="text-blue-400" />, high: 7, low: 1 },
         'Dresden': { temp: 3, condition: 'Clear', icon: <Sun className="text-yellow-400" />, high: 6, low: 0 },
         'Prague': { temp: 2, condition: 'Mostly Cloudy', icon: <Cloud className="text-slate-400" />, high: 5, low: -2 },
+        'Return': { temp: 2, condition: 'Mostly Cloudy', icon: <Cloud className="text-slate-400" />, high: 5, low: -2 },
         'IAD': { temp: 12, condition: 'Clear', icon: <Sun className="text-yellow-400" />, high: 15, low: 8 },
         'BOS': { temp: 8, condition: 'Breezy', icon: <Wind className="text-slate-300" />, high: 11, low: 4 },
+        'DUB': { temp: 9, condition: 'Windy', icon: <Wind className="text-slate-400" />, high: 12, low: 5 },
+        'AMS': { temp: 6, condition: 'Overcast', icon: <Cloud className="text-slate-400" />, high: 9, low: 3 },
+        'VIE': { temp: 5, condition: 'Cloudy', icon: <Cloud className="text-slate-400" />, high: 8, low: 2 },
         'Departure': { temp: 12, condition: 'Clear', icon: <Sun className="text-yellow-400" />, high: 15, low: 8 }
     };
 
@@ -320,44 +325,59 @@ const App = () => {
                         {segments[activeSegment].flights && (
                             <div className="mb-8">
                                 <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <Plane size={14} /> Scheduled Flights
+                                    <Plane size={14} /> Mission Logistics
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {segments[activeSegment].flights.map((flight, idx) => (
-                                        <div key={idx} className="p-4 rounded-2xl bg-slate-800/50 border border-slate-700/50 hover:border-indigo-500/30 transition-colors">
-                                            <div className="flex justify-between items-start mb-4">
-                                                <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold">
-                                                    {flight.id}
-                                                </span>
-                                                <span className="text-sm font-mono text-slate-300">{flight.departs}</span>
-                                            </div>
-                                            <div className="flex items-center justify-between">
+                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                                    {segments[activeSegment].flights.map((group, idx) => (
+                                        <div key={idx} className="p-6 rounded-2xl bg-slate-800/40 border border-slate-700/50 hover:border-indigo-500/30 transition-all shadow-xl">
+                                            <div className="flex justify-between items-center mb-6">
                                                 <div>
-                                                    <p className="text-xs text-slate-500">From</p>
-                                                    <p className="text-xl font-bold">{flight.from}</p>
+                                                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">Traveler</span>
+                                                    <h4 className="text-xl font-black text-white">{group.traveler}</h4>
                                                 </div>
-                                                <Plane size={18} className="text-slate-600 rotate-90" />
                                                 <div className="text-right">
-                                                    <p className="text-xs text-slate-500">Status</p>
-                                                    <p className={`text-sm font-bold ${flight.status === 'In Air' ? 'text-indigo-400 animate-pulse' : 'text-emerald-400'}`}>
-                                                        {flight.status || 'Scheduled'}
-                                                    </p>
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Route</span>
+                                                    <p className="text-xs font-mono text-slate-400">{group.route}</p>
                                                 </div>
                                             </div>
 
-                                            {/* Live Telemetry Overlay */}
-                                            {flight.status === 'In Air' && (
-                                                <div className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-2 gap-2">
-                                                    <div>
-                                                        <p className="text-[10px] text-slate-500 uppercase font-bold">Altitude</p>
-                                                        <p className="text-sm font-mono text-indigo-300">{flight.altitude ? Math.round(flight.altitude).toLocaleString() : '--'} m</p>
+                                            <div className="space-y-4">
+                                                {group.legs.map((leg, lIdx) => (
+                                                    <div key={lIdx} className="bg-black/30 p-4 rounded-xl border border-white/5 group/leg relative">
+                                                        <div className="flex justify-between items-start mb-4">
+                                                            <span className="text-xs font-black text-slate-400 uppercase tracking-widest">{leg.id}</span>
+                                                            <div className="text-right">
+                                                                <p className="text-sm font-bold text-white tracking-tighter">{leg.departs} → {leg.arrives}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center justify-between gap-4">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">From</span>
+                                                                <span className="text-lg font-black">{leg.from}</span>
+                                                            </div>
+                                                            <div className="h-px flex-1 bg-slate-800 relative">
+                                                                <Plane size={14} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-600 rotate-90" />
+                                                            </div>
+                                                            <div className="flex flex-col text-right">
+                                                                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">To</span>
+                                                                <span className="text-lg font-black">{leg.to}</span>
+                                                            </div>
+                                                        </div>
+                                                        {leg.status === 'In Air' && (
+                                                            <div className="mt-4 pt-4 border-t border-white/5 grid grid-cols-2 gap-2">
+                                                                <div className="flex flex-col text-indigo-300">
+                                                                    <span className="text-[10px] text-slate-500 uppercase">Alt</span>
+                                                                    <span className="text-xs font-mono">{leg.altitude ? Math.round(leg.altitude).toLocaleString() : '--'}m</span>
+                                                                </div>
+                                                                <div className="flex flex-col text-right text-indigo-300">
+                                                                    <span className="text-[10px] text-slate-500 uppercase">Vel</span>
+                                                                    <span className="text-xs font-mono">{leg.velocity || '--'}km/h</span>
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    <div>
-                                                        <p className="text-[10px] text-slate-500 uppercase font-bold">Velocity</p>
-                                                        <p className="text-sm font-mono text-indigo-300">{flight.velocity || '--'} km/h</p>
-                                                    </div>
-                                                </div>
-                                            )}
+                                                ))}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -377,23 +397,40 @@ const App = () => {
                                             <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                                                 <MapPin className="text-emerald-400" />
                                             </div>
-                                            <div>
+                                            <div className="flex-1">
                                                 <a
-                                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(segments[activeSegment].accommodation.address || segments[activeSegment].accommodation.details + " " + segments[activeSegment].city)}`}
+                                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(segments[activeSegment].accommodation.address || segments[activeSegment].city)}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-lg font-medium text-slate-200 mb-4 lh-relaxed hover:text-indigo-400 transition-colors flex items-center gap-2 group/link"
+                                                    className="text-lg font-black text-indigo-300 mb-2 hover:text-indigo-400 transition-colors flex items-center gap-2 group/link"
                                                 >
-                                                    {segments[activeSegment].accommodation.address || segments[activeSegment].accommodation.details}
+                                                    {segments[activeSegment].accommodation.name || segments[activeSegment].accommodation.address}
                                                     <ExternalLink size={16} className="opacity-0 group-hover/link:opacity-100 transition-opacity" />
                                                 </a>
+                                                <p className="text-sm text-slate-400 mb-6 font-medium leading-relaxed">{segments[activeSegment].accommodation.address}</p>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {Object.entries(segments[activeSegment].accommodation).map(([key, value]) => {
+                                                        if (['name', 'address', 'rules'].includes(key)) return null;
+                                                        return (
+                                                            <div key={key} className="bg-black/30 p-3 rounded-lg border border-white/5">
+                                                                <p className="text-[10px] text-slate-500 uppercase font-black mb-1">{key.replace('_', ' ')}</p>
+                                                                <p className="text-sm font-bold text-slate-200">{value}</p>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+
                                                 {segments[activeSegment].accommodation.rules && (
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {segments[activeSegment].accommodation.rules.map((rule, idx) => (
-                                                            <span key={idx} className="px-3 py-1 rounded-lg bg-black/40 text-xs text-slate-400 border border-white/5">
-                                                                {rule}
-                                                            </span>
-                                                        ))}
+                                                    <div className="mt-6">
+                                                        <p className="text-[10px] text-slate-500 uppercase font-black mb-3 text-indigo-400 tracking-widest">Mission Directives</p>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {segments[activeSegment].accommodation.rules.map((rule, idx) => (
+                                                                <span key={idx} className="px-3 py-1 rounded-lg bg-indigo-500/10 text-xs text-indigo-300 border border-indigo-500/20 font-bold">
+                                                                    {rule}
+                                                                </span>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
@@ -412,6 +449,12 @@ const App = () => {
                                         <SecurityWidget airportId="BOS" />
                                         <WeatherWidget city="BOS" />
                                     </>
+                                ) : segments[activeSegment].city === 'Return' ? (
+                                    <>
+                                        <WeatherWidget city="Prague" />
+                                        <CurrencyWidget city="Prague" />
+                                        <WeatherWidget city="DUB" />
+                                    </>
                                 ) : (
                                     <>
                                         <WeatherWidget city={segments[activeSegment].city} />
@@ -421,7 +464,7 @@ const App = () => {
                             </div>
                         </div>
 
-                        {/* Weather/Environment Placeholder fallback if empty */}
+                        {/* Empty State fallback */}
                         {!segments[activeSegment].flights && !segments[activeSegment].accommodation && (
                             <div className="flex flex-col items-center justify-center h-64 text-slate-500 opacity-50">
                                 <Wind size={48} className="mb-4" />
@@ -436,8 +479,8 @@ const App = () => {
                                 <Wifi size={20} />
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 font-bold">Connectivity</p>
-                                <p className="text-sm">Secure VPN Active</p>
+                                <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter">Connectivity</p>
+                                <p className="text-sm font-black">Secure VPN Active</p>
                             </div>
                         </div>
                         <div className="glass-card flex items-center gap-4">
@@ -445,8 +488,8 @@ const App = () => {
                                 <Clock size={20} />
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 font-bold">ETA Berlin</p>
-                                <p className="text-sm">72h 14m</p>
+                                <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter">Mission ETA</p>
+                                <p className="text-sm font-black text-emerald-400">71h 56m</p>
                             </div>
                         </div>
                         <div className="glass-card flex items-center gap-4 group cursor-pointer hover:bg-slate-700/30">
@@ -454,8 +497,8 @@ const App = () => {
                                 <ExternalLink size={20} />
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 font-bold">Check-in</p>
-                                <p className="text-sm group-hover:text-purple-300 transition-colors">Available Mar 5</p>
+                                <p className="text-xs text-slate-500 font-bold uppercase tracking-tighter">Check-in</p>
+                                <p className="text-sm group-hover:text-purple-300 transition-colors font-black">Available Mar 5</p>
                             </div>
                         </div>
                     </div>
