@@ -1,0 +1,48 @@
+{
+  "trip_id": "EUROPE_2026_MAR",
+  "segments": [
+    {
+      "date": "2026-03-06",
+      "city": "Departure",
+      "flights": [
+        {
+          "id": "DL9447",
+          "from": "IAD",
+          "departs": "18:45",
+          "status": "Delayed",
+          "gate": "B12"
+        },
+        {
+          "id": "OS32",
+          "from": "BOS",
+          "departs": "18:25"
+        }
+      ]
+    },
+    {
+      "date": "2026-03-07",
+      "city": "Berlin",
+      "accommodation": {
+        "address": "Wörther Str. 6, 10435 Berlin",
+        "rules": [
+          "Trash separation",
+          "Tender shades"
+        ]
+      }
+    },
+    {
+      "date": "2026-03-10",
+      "city": "Dresden",
+      "accommodation": {
+        "details": "Altstadt Dresden Hotel"
+      }
+    },
+    {
+      "date": "2026-03-11",
+      "city": "Prague",
+      "accommodation": {
+        "details": "Central Prague Apartment"
+      }
+    }
+  ]
+}

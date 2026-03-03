@@ -1,0 +1,39 @@
+name: Europe 2026 Flight Sentinel
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Flight Sentinel
+        env:
+          GMAIL_CREDENTIALS: ${{ secrets.GMAIL_CREDENTIALS }}
+          ITINERARY_GSHEET_ID: ${{ secrets.ITINERARY_GSHEET_ID }}
+        run: node agents/flight_sentinel.js
+
+      - name: Run Transit Scraper
+        run: node agents/transit_scraper.js
+
+      - name: Commit Status Updates
+        run: |
+          git config --global user.name 'Sentinel Agent'
+          git config --global user.email 'sentinel@antigravity.ai'
+          git add data/itinerary.json
+          git commit -m "Sentinel Update: Flight/Transit Status Sync [skip ci]" || echo "No changes to commit"
+          git push
