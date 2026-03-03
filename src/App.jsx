@@ -112,6 +112,60 @@ const CurrencyWidget = ({ locale, city }) => {
     );
 };
 
+const PhraseWidget = ({ countryCode }) => {
+    const countryData = {
+        'DE': {
+            name: 'Germany',
+            phrases: [
+                { en: "The bill, please", native: "Die Rechnung, bitte" },
+                { en: "Where is the train station?", native: "Wo ist der Bahnhof?" },
+                { en: "I don't speak much German", native: "Ich spreche nicht viel Deutsch" },
+                { en: "Water without gas", native: "Stilles Wasser" }
+            ]
+        },
+        'CZ': {
+            name: 'Czech Republic',
+            phrases: [
+                { en: "The bill, please", native: "Účet, prosím" },
+                { en: "Where is the bathroom?", native: "Kde je toaleta?" },
+                { en: "One beer, please", native: "Jedno pivo, prosím" },
+                { en: "Thank you", native: "Děkuji" }
+            ]
+        },
+        'CS': {
+            name: 'Czech Republic',
+            phrases: [
+                { en: "The bill, please", native: "Účet, prosím" },
+                { en: "Where is the bathroom?", native: "Kde je toaleta?" },
+                { en: "One beer, please", native: "Jedno pivo, prosím" },
+                { en: "Thank you", native: "Děkuji" }
+            ]
+        }
+    };
+
+    const data = countryData[countryCode];
+    if (!data) return null;
+
+    return (
+        <div className="p-8 rounded-[2.5rem] bg-slate-800/20 border border-white/5 shadow-inner">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-6 flex items-center gap-2">
+                <Languages size={14} className="text-indigo-400" /> Tactical Linguistics
+            </h4>
+            <div className="space-y-4">
+                {data.phrases.map((p, i) => (
+                    <div key={i} className="group cursor-default">
+                        <p className="text-[10px] text-slate-500 font-bold uppercase mb-1">{p.en}</p>
+                        <div className="flex items-center gap-3">
+                            <ArrowRight size={10} className="text-indigo-500 opacity-50" />
+                            <p className="text-sm font-black text-indigo-300 group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{p.native}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 const WeatherWidget = ({ city }) => {
     const weatherMap = {
         'Berlin': { temp: 4, condition: 'Light Rain', icon: <CloudRain className="text-blue-400" /> },
@@ -334,6 +388,9 @@ const App = () => {
                                     <>
                                         <WeatherWidget city={currentSegment.city === 'Return' ? 'Prague' : currentSegment.city} />
                                         <CurrencyWidget locale={currentSegment.locale} city={currentSegment.city} />
+                                        {currentSegment.locale?.language && (
+                                            <PhraseWidget countryCode={currentSegment.locale.language.toUpperCase()} />
+                                        )}
                                     </>
                                 )}
                             </div>

@@ -116,6 +116,13 @@
     {
       "date": "2026-03-15",
       "city": "Return",
+      "country": "Czech Republic",
+      "locale": {
+        "currency": "CZK",
+        "language": "cs",
+        "symbol": "Kč",
+        "rate_to_usd": 0.043
+      },
       "flights": [
         {
           "traveler": "Mark/Shelagh",
