@@ -1,8 +1,9 @@
 name: Europe 2026 Flight Sentinel
 
+# on:
+#   schedule:
+#     - cron: '0 * * * *' # Runs every hour
 on:
-  schedule:
-    - cron: '0 * * * *' # Runs every hour
   workflow_dispatch: # Allows manual trigger
 
 jobs:
@@ -30,10 +31,10 @@ jobs:
       - name: Run Transit Scraper
         run: node agents/transit_scraper.js
 
-      - name: Commit Status Updates
-        run: |
-          git config --global user.name 'Sentinel Agent'
-          git config --global user.email 'sentinel@antigravity.ai'
-          git add data/itinerary.json
-          git commit -m "Sentinel Update: Flight/Transit Status Sync [skip ci]" || echo "No changes to commit"
-          git push
+#      - name: Commit Status Updates
+#        run: |
+#          git config --global user.name 'Sentinel Agent'
+#          git config --global user.email 'sentinel@antigravity.ai'
+#          git add data/itinerary.json
+#          git commit -m "Sentinel Update: Flight/Transit Status Sync [skip ci]" || echo "No changes to commit"
+#          git push

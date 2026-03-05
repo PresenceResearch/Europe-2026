@@ -67,7 +67,7 @@ class TransitScraper {
         const currentPrice = parseFloat(price);
         if (currentPrice < 55) {
             console.log(`[TransitScraper] Price drop detected! Current: €${currentPrice}`);
-            this.notify(`Price drop for ${segment.from} -> ${segment.to}! Now only €${currentPrice}. Check DB Bahn.`);
+            // this.notify(`Price drop for ${segment.from} -> ${segment.to}! Now only €${currentPrice}. Check DB Bahn.`);
         }
     }
 

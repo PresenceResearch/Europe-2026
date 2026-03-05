@@ -142,7 +142,7 @@ class FlightSentinel {
                             leg.gate = update.gate || leg.gate;
                             changed = true;
                             console.log(`[FlightSentinel] Updating status for ${leg.id} (${group.traveler})`);
-                            this.notify(`${leg.id} (${group.traveler}) status: ${update.status}. Dep: ${leg.departs}`, 'high');
+                            // this.notify(`${leg.id} (${group.traveler}) status: ${update.status}. Dep: ${leg.departs}`, 'high');
                         }
                     });
                 });
